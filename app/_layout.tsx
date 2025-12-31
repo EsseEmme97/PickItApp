@@ -1,16 +1,15 @@
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
+import { Tabs } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
-
-import { useColorScheme } from '@/components/useColorScheme';
+import { Quicksand_400Regular } from '@expo-google-fonts/quicksand/400Regular';
+import { BottomTabs } from 'react-native-screens';
 
 export {
   // Catch any errors thrown by the Layout component.
-  ErrorBoundary,
+  ErrorBoundary
 } from 'expo-router';
 
 export const unstable_settings = {
@@ -23,7 +22,7 @@ SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const [loaded, error] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
+    Quicksand_400Regular,
     ...FontAwesome.font,
   });
 
@@ -46,14 +45,12 @@ export default function RootLayout() {
 }
 
 function RootLayoutNav() {
-  const colorScheme = useColorScheme();
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
-      </Stack>
-    </ThemeProvider>
+    <Tabs screenOptions={{tabBarLabelPosition:"below-icon", tabBarLabelStyle:{fontFamily:"Quicksand_400Regular", fontSize:12}}}>
+      <Tabs.Screen name="index" options={{ title:"home", tabBarIcon: ({focused,size,color})=>!focused && <FontAwesome name="home" size={24} color="black" />}} />
+      <Tabs.Screen name="lists/index" options={{ title: "tutte le liste"}} />
+      <Tabs.Screen name="lists/[id]" options={{title:"singola lista", href:null}} /> 
+    </Tabs>
   );
 }

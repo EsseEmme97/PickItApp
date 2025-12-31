@@ -1,32 +1,61 @@
 import { db } from "@/firebase.config";
-import { collection, getDocs, doc, getDoc, addDoc } from "firebase/firestore";
 import type { List } from "@/types";
+import { addDoc, collection, doc, getDoc, getDocs } from "firebase/firestore";
 
 export async function getLists(): Promise<List[]>{
-    const lists= collection(db, "liste");
-    const querySnapshot= await getDocs(lists);
-    const formattedLists= querySnapshot.docs.map((doc)=>{
-        return {id:doc.id, ...doc.data()};
-    }) as List[];
-    return formattedLists;
+    try {
+        const lists = collection(db, "liste");
+        const querySnapshot = await getDocs(lists);
+        if (!querySnapshot || !Array.isArray(querySnapshot.docs)) return [];
+        const formattedLists = querySnapshot.docs.map((doc) => {
+            const data = doc.data() || {};
+            return { id: doc.id, ...(data as object) } as List;
+        }) as List[];
+        return formattedLists;
+    } catch (error) {
+        console.error("getLists error:", error);
+        throw new Error("Impossibile recuperare le liste dal database.");
+    }
 }
 
-export async function getSingleList(id:string){
-    const lists= collection(db,"liste");
-    const singleDocRef= doc(lists,id);
-    const singleDocSnap= await getDoc(singleDocRef);
-    return singleDocSnap.data();
+export async function getSingleList(id:string): Promise<List>{
+    if (!id || typeof id !== "string") {
+        throw new Error("ID non valido fornito a getSingleList");
+    }
+
+    try {
+        const lists = collection(db, "liste");
+        const singleDocRef = doc(lists, id);
+        const singleDocSnap = await getDoc(singleDocRef);
+
+        if (!singleDocSnap.exists()) {
+            throw new Error(`Lista con id ${id} non trovata`);
+        }
+
+        const data = singleDocSnap.data();
+        if (!data) throw new Error(`Documento ${id} privo di dati`);
+
+        return data as List;
+    } catch (error) {
+        console.error(`getSingleList error (id=${id}):`, error);
+        throw new Error("Impossibile recuperare la lista richiesta dal database.");
+    }
 };
 
 export async function seedDatabase(): Promise<void> {
-    const lists= collection(db,"liste");
-    await addDoc(lists,{
-        data_creazione: new Date().toLocaleDateString(),
-        elementi:[
-            {nome:"latte", quantita:1},
-            {nome:"pane", quantita:3}
-        ],
-    });
+    try {
+        const lists = collection(db, "liste");
+        await addDoc(lists, {
+            data_creazione: new Date().toLocaleDateString(),
+            elementi: [
+                { nome: "latte", quantita: 1 },
+                { nome: "pane", quantita: 3 }
+            ],
+        });
+    } catch (error) {
+        console.error("seedDatabase error:", error);
+        throw new Error("Impossibile inserire dati iniziali nel database.");
+    }
 }
 
 /* console.log(getLists().then(console.log)) */
