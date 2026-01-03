@@ -5,7 +5,8 @@ import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
 import { Quicksand_400Regular } from '@expo-google-fonts/quicksand/400Regular';
-import { BottomTabs } from 'react-native-screens';
+import CustomTabBar from '@/components/CustomTabBar';
+
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -47,9 +48,9 @@ export default function RootLayout() {
 function RootLayoutNav() {
 
   return (
-    <Tabs screenOptions={{tabBarLabelPosition:"below-icon", tabBarLabelStyle:{fontFamily:"Quicksand_400Regular", fontSize:12}}}>
-      <Tabs.Screen name="index" options={{ title:"home", tabBarIcon: ({focused,size,color})=>!focused && <FontAwesome name="home" size={24} color="black" />}} />
-      <Tabs.Screen name="lists/index" options={{ title: "tutte le liste"}} />
+    <Tabs tabBar= {props=><CustomTabBar {...props}/>}>
+      <Tabs.Screen name="index" options={{ title:"home"}} />
+      <Tabs.Screen name="lists/index" options={{ title: "liste"}} />
       <Tabs.Screen name="lists/[id]" options={{title:"singola lista", href:null}} /> 
     </Tabs>
   );
