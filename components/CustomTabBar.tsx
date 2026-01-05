@@ -1,9 +1,9 @@
-import { View, StyleSheet } from 'react-native';
-import { useEffect } from 'react';
-import { useLinkBuilder } from '@react-navigation/native';
-import { PlatformPressable } from '@react-navigation/elements';
-import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import Feather from '@expo/vector-icons/Feather';
+import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
+import { PlatformPressable } from '@react-navigation/elements';
+import { useLinkBuilder } from '@react-navigation/native';
+import { useEffect } from 'react';
+import { StyleSheet, View } from 'react-native';
 import Animated, {
   createAnimatedComponent,
   interpolate,
@@ -27,10 +27,11 @@ export default function CustomTabBar({
   /** posizione animata del background */
   const translateX = useSharedValue(0);
 
-  /** 🔥 sincronizza il background con la tab attiva */
+  const visualIndex = state.index === 2 ? 1 : state.index;
+
   useEffect(() => {
-    translateX.value = withSpring(state.index * TAB_OFFSET);
-  }, [state.index]);
+    translateX.value = withSpring(visualIndex * TAB_OFFSET);
+  }, [visualIndex]);
 
   const animatedBgStyle = useAnimatedStyle(() => ({
     transform: [{ translateX: translateX.value }],
@@ -50,7 +51,7 @@ export default function CustomTabBar({
           options.title ??
           route.name;
 
-        const isFocused = state.index === index;
+        const isFocused = visualIndex === index;
 
         const progress = useSharedValue(isFocused ? 1 : 0);
         progress.value = isFocused ? 1 : 0;
