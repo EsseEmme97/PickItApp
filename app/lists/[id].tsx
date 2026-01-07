@@ -5,7 +5,7 @@ import { getSingleList } from "@/db/db";
 import type { List } from "@/types";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, Modal } from "react-native";
 import Animated, { LinearTransition } from "react-native-reanimated";
 
 

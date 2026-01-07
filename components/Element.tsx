@@ -1,7 +1,8 @@
 import { Colors } from "@/constants/Colors";
 import Feather from "@expo/vector-icons/Feather";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Modal, Pressable, StyleSheet, Text, View, TextInput } from "react-native";
 import Animated, { LinearTransition } from "react-native-reanimated";
+import { useState } from "react";
 
 type ElementProps= {
     nome:string,
@@ -12,6 +13,7 @@ type ElementProps= {
 }
 
 export default function Element({ nome, quantita, currentElementIndex, totalElements, onSwap }: ElementProps) {
+    const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
 
     const handleMoveUp = () => {
         if (currentElementIndex === 0) return;
@@ -24,7 +26,7 @@ export default function Element({ nome, quantita, currentElementIndex, totalElem
     }
 
     const handleEdit = () => {
-        // placeholder per futura modifica/azione
+       setIsModalVisible(true);
     }
 
     return (
@@ -42,6 +44,13 @@ export default function Element({ nome, quantita, currentElementIndex, totalElem
                     <Feather name="edit-2" size={24} color={Colors.BIANCO} />
                 </Pressable>
             </View>
+             <Modal visible={isModalVisible} transparent={true} animationType="slide">
+                <View style={styles.modal}>
+                    <TextInput value={nome} />
+                    <TextInput value={quantita.toString()} keyboardType="numeric" />
+                    <Pressable onPress={() => setIsModalVisible(false)}>Close</Pressable>
+                </View>
+            </Modal>
         </Animated.View>
     )
 }
@@ -72,5 +81,11 @@ const styles = StyleSheet.create({
     actionWrapper: {
         gap: 10,
         flexDirection: "row"
+    },
+    modal:{
+        flex:1,
+        justifyContent:"center",
+        alignItems:"center",
+        backgroundColor: Colors.GIALLO_CHIARO,
     }
 })
