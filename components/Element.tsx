@@ -1,20 +1,18 @@
 import { Colors } from "@/constants/Colors";
 import Feather from "@expo/vector-icons/Feather";
-import { Modal, Pressable, StyleSheet, Text, View, TextInput } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 import Animated, { LinearTransition } from "react-native-reanimated";
-import { useState } from "react";
 
 type ElementProps= {
     nome:string,
     quantita:number,
     currentElementIndex:number,
     totalElements:number,
-    onSwap: (index1:number, index2:number)=>void
+    onSwap: (index1:number, index2:number)=>void,
+    onEdit: (index:number)=>void, // new prop: request parent to open edit modal
 }
 
-export default function Element({ nome, quantita, currentElementIndex, totalElements, onSwap }: ElementProps) {
-    const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
-
+export default function Element({ nome, quantita, currentElementIndex, totalElements, onSwap, onEdit }: ElementProps) {
     const handleMoveUp = () => {
         if (currentElementIndex === 0) return;
         onSwap(currentElementIndex, currentElementIndex - 1);
@@ -26,7 +24,7 @@ export default function Element({ nome, quantita, currentElementIndex, totalElem
     }
 
     const handleEdit = () => {
-       setIsModalVisible(true);
+       onEdit(currentElementIndex);
     }
 
     return (
@@ -44,13 +42,7 @@ export default function Element({ nome, quantita, currentElementIndex, totalElem
                     <Feather name="edit-2" size={24} color={Colors.BIANCO} />
                 </Pressable>
             </View>
-             <Modal visible={isModalVisible} transparent={true} animationType="slide">
-                <View style={styles.modal}>
-                    <TextInput value={nome} />
-                    <TextInput value={quantita.toString()} keyboardType="numeric" />
-                    <Pressable onPress={() => setIsModalVisible(false)}>Close</Pressable>
-                </View>
-            </Modal>
+            {/* modal gestito dal componente genitore */}
         </Animated.View>
     )
 }

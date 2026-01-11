@@ -1,6 +1,6 @@
 import { db } from "@/firebase.config";
 import type { List } from "@/types";
-import { addDoc, collection, doc, getDoc, getDocs } from "firebase/firestore";
+import { addDoc, collection, doc, getDoc, getDocs, updateDoc, arrayUnion, arrayRemove, runTransaction } from "firebase/firestore";
 
 export async function getLists(): Promise<List[]>{
     try {
@@ -41,6 +41,22 @@ export async function getSingleList(id:string): Promise<List>{
         throw new Error("Impossibile recuperare la lista richiesta dal database.");
     }
 };
+
+export async function updateListElements(id: string, elementi: List['elementi']): Promise<void> {
+  const ref = doc(db, "liste", id);
+  await updateDoc(ref, { elementi });
+}
+
+export async function addElementToList(id: string, element: List['elementi'][0]): Promise<void> {
+  const ref = doc(db, "liste", id);
+  await updateDoc(ref, { elementi: arrayUnion(element) });
+}
+
+export async function removeElementFromList(id: string, element: List['elementi'][0]): Promise<void> {
+  const ref = doc(db, "liste", id);
+  await updateDoc(ref, { elementi: arrayRemove(element) });
+}
+
 
 export async function seedDatabase(): Promise<void> {
     try {
