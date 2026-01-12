@@ -1,6 +1,6 @@
 import { Modal, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { Colors } from "@/constants/Colors";
-
+import Feather from "@expo/vector-icons/Feather";
 
 type EditModalProps = {
     visible: boolean;
@@ -22,7 +22,7 @@ export default function EditModal({
     onSave,
 }: EditModalProps) {
     return (
-        <Modal visible={visible} transparent={true} animationType="slide">
+        <Modal visible={visible} transparent={true} animationType="slide" onRequestClose={onClose}>
             <View style={styles.modal}>
                 <TextInput
                     style={styles.input}
@@ -40,8 +40,8 @@ export default function EditModal({
                 <Pressable style={styles.button} onPress={onSave}>
                     <Text style={styles.buttonText}>Salva</Text>
                 </Pressable>
-                <Pressable style={styles.button} onPress={onClose}>
-                    <Text style={styles.buttonText}>Chiudi</Text>
+                <Pressable style={styles.closeButton} onPress={onClose}>
+                    <Feather name="x-circle" size={24} />
                 </Pressable>
             </View>
         </Modal>
@@ -50,16 +50,21 @@ export default function EditModal({
 
 const styles = StyleSheet.create({
     modal: {
-        flex: 1,
+        width: "80%",
+        height:"80%",
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: Colors.GIALLO_CHIARO,
+        backgroundColor: Colors.BIANCO,
         gap: 15,
+        borderRadius:30,
+        alignSelf:"center",
+        marginVertical:"auto",
     },
     input: {
         width: "80%",
         borderWidth: 1,
         borderColor: Colors.VERDE,
+        backgroundColor:Colors.GIALLO_CHIARO,
         borderRadius: 8,
         padding: 10,
         fontFamily: "Quicksand_400Regular",
@@ -75,4 +80,9 @@ const styles = StyleSheet.create({
         fontFamily: "Quicksand_400Regular",
         fontSize: 16,
     },
+    closeButton:{
+        position:"absolute",
+        top:10,
+        right:10,
+    }
 });

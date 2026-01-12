@@ -2,7 +2,7 @@ import Feather from '@expo/vector-icons/Feather';
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { PlatformPressable } from '@react-navigation/elements';
 import { useLinkBuilder } from '@react-navigation/native';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Animated, {
   createAnimatedComponent,
@@ -15,7 +15,7 @@ import Animated, {
 import { Colors } from '@/constants/Colors';
 
 const AnimatedPressable = createAnimatedComponent(PlatformPressable);
-const TAB_OFFSET = 67;
+// removed hardcoded offset: we'll calculate positions dynamically
 
 export default function CustomTabBar({
   state,
@@ -26,14 +26,29 @@ export default function CustomTabBar({
 
   /** posizione animata del background */
   const translateX = useSharedValue(0);
+  const bgWidth = useSharedValue(48);
 
-  const visualIndex = state.index === 2 ? 1 : state.index;
+  // keep track of measured layouts for rendered (visible) tabs
+  const [layouts, setLayouts] = useState<{ x: number; width: number }[]>([]);
 
+  // compute visible routes (we hide the route 'lists/[id]')
+  const visibleRoutes = state.routes.filter((r) => r.name !== 'lists/[id]');
+
+  // find the index of the active route among visible routes
+  const activeKey = state.routes[state.index]?.key;
+  const visualIndex = Math.max(0, visibleRoutes.findIndex((r) => r.key === activeKey));
+
+  // when active index or layouts change, animate bg to the measured position
   useEffect(() => {
-    translateX.value = withSpring(visualIndex * TAB_OFFSET);
-  }, [visualIndex]);
+    const layout = layouts[visualIndex];
+    if (layout) {
+      bgWidth.value = withSpring(layout.width);
+      translateX.value = withSpring(layout.x);
+    }
+  }, [visualIndex, layouts]);
 
   const animatedBgStyle = useAnimatedStyle(() => ({
+    width: bgWidth.value,
     transform: [{ translateX: translateX.value }],
   }));
 
@@ -41,15 +56,10 @@ export default function CustomTabBar({
     <View style={styles.wrapper}>
       <Animated.View style={[styles.bgAnimation, animatedBgStyle]} />
 
-      {state.routes.map((route, index) => {
+      {visibleRoutes.map((route, index) => {
         const { options } = descriptors[route.key];
 
-        if (route.name === 'lists/[id]') return null;
-
-        const label =
-          options.tabBarLabel ??
-          options.title ??
-          route.name;
+        const label = options.tabBarLabel ?? options.title ?? route.name;
 
         const isFocused = visualIndex === index;
 
@@ -64,9 +74,7 @@ export default function CustomTabBar({
               ),
             },
           ],
-          top: withSpring(
-            interpolate(progress.value, [0, 1], [0, 9])
-          ),
+          top: withSpring(interpolate(progress.value, [0, 1], [0, 9])),
         }));
 
         const textStyle = useAnimatedStyle(() => ({
@@ -85,6 +93,21 @@ export default function CustomTabBar({
           }
         };
 
+        const onLayout = (e: any) => {
+          const { x, width } = e.nativeEvent.layout;
+          setLayouts((prev) => {
+            const copy = [...prev];
+            copy[index] = { x:x-20, width };
+            return copy;
+          });
+
+          // If this is the focused item, immediately animate bg to it
+          if (isFocused) {
+            bgWidth.value = withSpring(width);
+            translateX.value = withSpring(x);
+          }
+        };
+
         return (
           <AnimatedPressable
             key={route.key}
@@ -92,6 +115,7 @@ export default function CustomTabBar({
             onPress={onPress}
             accessibilityState={isFocused ? { selected: true } : {}}
             style={styles.button}
+            onLayout={onLayout}
           >
             <Animated.View style={iconStyle}>
               <Feather
