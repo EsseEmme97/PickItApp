@@ -15,7 +15,8 @@ import Animated, {
 import { Colors } from '@/constants/Colors';
 
 const AnimatedPressable = createAnimatedComponent(PlatformPressable);
-// removed hardcoded offset: we'll calculate positions dynamically
+
+const icons= ["home", "list","plus-circle","shopping-bag"];
 
 export default function CustomTabBar({
   state,
@@ -49,6 +50,7 @@ export default function CustomTabBar({
 
   const animatedBgStyle = useAnimatedStyle(() => ({
     width: bgWidth.value,
+    borderRadius: bgWidth.value / 2,
     transform: [{ translateX: translateX.value }],
   }));
 
@@ -74,7 +76,7 @@ export default function CustomTabBar({
               ),
             },
           ],
-          top: withSpring(interpolate(progress.value, [0, 1], [0, 9])),
+          top: withSpring(interpolate(progress.value, [0, 1], [0, 11])),
         }));
 
         const textStyle = useAnimatedStyle(() => ({
@@ -119,7 +121,7 @@ export default function CustomTabBar({
           >
             <Animated.View style={iconStyle}>
               <Feather
-                name={route.name === 'index' ? 'home' : 'list'}
+                name={icons[index] as any}
                 size={24}
                 color={isFocused ? Colors.BIANCO : 'black'}
               />
@@ -170,7 +172,6 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     top: 20,
-    borderRadius: 24,
     backgroundColor: Colors.VERDE,
   },
 });

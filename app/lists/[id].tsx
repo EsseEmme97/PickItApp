@@ -23,6 +23,10 @@ export default function singleListPage() {
     const [editNome, setEditNome] = useState("");
     const [editQuantita, setEditQuantita] = useState("0");
 
+    //state for showing save button on edit modal
+
+    const [isEditChanged, setIsEditChanged] = useState(false);
+
     useEffect(() => {
         setIsLoading(true);
         getSingleList(id as string)
@@ -76,6 +80,7 @@ export default function singleListPage() {
         const newElements = [...elements];
         newElements[editIndex] = { ...newElements[editIndex], nome: nomeTrim, quantita: qty };
         setElements(newElements);
+        setIsEditChanged(true);
         closeEdit();
     }
 
@@ -109,6 +114,7 @@ export default function singleListPage() {
                 onQuantitaChange={setEditQuantita}
                 onSave={saveEdit}
             />
+            {isEditChanged && <Text>Salva modifiche</Text>}
         </View>
     )
 }

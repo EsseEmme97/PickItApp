@@ -51,7 +51,9 @@ function RootLayoutNav() {
     <Tabs tabBar= {props=><CustomTabBar {...props}/>}>
       <Tabs.Screen name="index" options={{ title:"home"}} />
       <Tabs.Screen name="lists/index" options={{ title: "liste"}} />
-      <Tabs.Screen name="lists/[id]" options={{title:"singola lista", href:null}} /> 
+      <Tabs.Screen name="lists/[id]" options={{title:"singola lista", href:null}} />
+      <Tabs.Screen name="newList" options={{ title: "nuovo"}} />
+      <Tabs.Screen name="Costs" options={{ title: "spese"}} />
     </Tabs>
   );
 }
