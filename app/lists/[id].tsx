@@ -1,13 +1,16 @@
+import AddModal from "@/components/AddModal";
+import EditModal from "@/components/EditModal";
 import Element from "@/components/Element";
 import Loader from "@/components/Loader";
 import MainBg from "@/components/MainBg";
-import { getSingleList } from "@/db/db";
+import { Colors } from "@/constants/Colors";
+import { getSingleList, updateListElements } from "@/db/db";
 import type { List } from "@/types";
+import Feather from "@expo/vector-icons/Feather";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
-import { StyleSheet, View, Modal, TextInput, Text, Pressable, Alert } from "react-native";
-import Animated, { LinearTransition } from "react-native-reanimated";
-import EditModal from "@/components/EditModal";
+import { Alert, Pressable, StyleSheet, Text, View } from "react-native";
+import Animated, { FadeInUp, LinearTransition, createAnimatedComponent } from "react-native-reanimated";
 
 
 export default function singleListPage() {
@@ -23,9 +26,17 @@ export default function singleListPage() {
     const [editNome, setEditNome] = useState("");
     const [editQuantita, setEditQuantita] = useState("0");
 
+    // states per add modal
+    const [addModalVisible, setAddModalVisible] = useState(false);
+    const [addNome, setAddNome] = useState("");
+    const [addQuantita, setAddQuantita] = useState("0");
+
     //state for showing save button on edit modal
 
     const [isEditChanged, setIsEditChanged] = useState(false);
+
+    // customized save button component with animation
+    const AnimatedPressable = createAnimatedComponent(Pressable);
 
     useEffect(() => {
         setIsLoading(true);
@@ -44,6 +55,7 @@ export default function singleListPage() {
         newElements[index1] = newElements[index2];
         newElements[index2] = temp;
         setElements(newElements);
+        setIsEditChanged(true);
     }
 
     const openEdit = (index: number) => {
@@ -52,6 +64,35 @@ export default function singleListPage() {
         setEditNome(item.nome);
         setEditQuantita(String(item.quantita ?? "0"));
         setModalVisible(true);
+    }
+
+    const openAdd = () => {
+        setAddNome("");
+        setAddQuantita("0");
+        setAddModalVisible(true);
+    }
+
+    const closeAdd = () => {
+        setAddModalVisible(false);
+        setAddNome("");
+        setAddQuantita("0");
+    }
+
+    const addNewElement = () => {
+        const nomeTrim = addNome.trim();
+        const qty = parseInt(addQuantita, 10);
+        if (!nomeTrim) {
+            Alert.alert("Errore", "Il nome non può essere vuoto.");
+            return;
+        }
+        if (Number.isNaN(qty) || qty <= 0) {
+            Alert.alert("Errore", "Inserisci una quantità valida (> 0).");
+            return;
+        }
+        const newEl = { id: genId(), nome: nomeTrim, quantita: qty } as any;
+        setElements(prev => [...prev, newEl]);
+        setIsEditChanged(true);
+        closeAdd();
     }
 
     const closeEdit = () => {
@@ -84,25 +125,35 @@ export default function singleListPage() {
         closeEdit();
     }
 
+    const saveListChanges = () => {
+        setIsLoading(true);
+        updateListElements(id as string, elements).finally(() => {
+            setIsLoading(false);
+            setIsEditChanged(false);
+        })
+    }
+
     return (
         <View style={styles.container}>
             <MainBg />
             {isLoading ? <Loader /> : (
-                <Animated.FlatList
-                    data={elements}
-                    keyExtractor={(item: any) => item.id}
-                    renderItem={({ item, index }) => (
-                        <Element
-                            nome={item.nome}
-                            currentElementIndex={index}
-                            totalElements={elements.length}
-                            quantita={item.quantita}
-                            onSwap={swappingElements}
-                            onEdit={openEdit} // passiamo la callback
-                        />
-                    )}
-                    itemLayoutAnimation={LinearTransition}
-                />
+                <View style={styles.ListContainer}>
+                    <Animated.FlatList
+                        data={elements}
+                        keyExtractor={(item: any) => item.id}
+                        renderItem={({ item, index }) => (
+                            <Element
+                                nome={item.nome}
+                                currentElementIndex={index}
+                                totalElements={elements.length}
+                                quantita={item.quantita}
+                                onSwap={swappingElements}
+                                onEdit={openEdit} // passiamo la callback
+                            />
+                        )}
+                        itemLayoutAnimation={LinearTransition}
+                    />
+                </View>
             )}
 
             <EditModal
@@ -114,7 +165,23 @@ export default function singleListPage() {
                 onQuantitaChange={setEditQuantita}
                 onSave={saveEdit}
             />
-            {isEditChanged && <Text>Salva modifiche</Text>}
+            {isEditChanged && <AnimatedPressable entering={FadeInUp} onPress={saveListChanges} style={styles.saveButton}><Text style={{
+                color: "white",
+                fontFamily: "Quicksand_400Regular",
+            }}>Salva modifiche</Text>
+            </AnimatedPressable>}
+            <Pressable style={styles.plusIcon} onPress={openAdd}>
+                <Feather color={"white"} name="plus" size={24}></Feather>
+            </Pressable>
+            <AddModal
+                visible={addModalVisible}
+                nome={addNome}
+                quantita={addQuantita}
+                onClose={closeAdd}
+                onNomeChange={setAddNome}
+                onQuantitaChange={setAddQuantita}
+                onAdd={addNewElement}
+            />
         </View>
     )
 }
@@ -122,7 +189,25 @@ export default function singleListPage() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: "center",
+        justifyContent: "flex-start",
         alignItems: "center"
     },
+    saveButton: {
+        borderRadius: 12,
+        padding: 10,
+        backgroundColor: Colors.VERDE,
+    },
+    ListContainer:{
+        flex:0.7
+    },
+    plusIcon:{
+        position:"absolute",
+        bottom:"20%",
+        right:30,
+        padding:4,
+        backgroundColor:Colors.VERDE,
+        borderRadius:30,
+        justifyContent:"center",
+        alignItems:"center"
+    }
 })
