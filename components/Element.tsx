@@ -1,18 +1,22 @@
 import { Colors } from "@/constants/Colors";
 import Feather from "@expo/vector-icons/Feather";
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import Animated, { LinearTransition } from "react-native-reanimated";
+import ReanimatedSwipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
+import type { SharedValue } from "react-native-reanimated";
+import Animated, { LinearTransition, useAnimatedStyle } from "react-native-reanimated";
 
-type ElementProps= {
-    nome:string,
-    quantita:number,
-    currentElementIndex:number,
-    totalElements:number,
-    onSwap: (index1:number, index2:number)=>void,
-    onEdit: (index:number)=>void, // new prop: request parent to open edit modal
+
+type ElementProps = {
+    nome: string,
+    quantita: number,
+    currentElementIndex: number,
+    totalElements: number,
+    onSwap: (index1: number, index2: number) => void,
+    onEdit: (index: number) => void, // new prop: request parent to open edit modal
+    onDelete: (index: number) => void, // new prop: request parent to delete element
 }
 
-export default function Element({ nome, quantita, currentElementIndex, totalElements, onSwap, onEdit }: ElementProps) {
+export default function Element({ nome, quantita, currentElementIndex, totalElements, onSwap, onEdit, onDelete }: ElementProps) {
     const handleMoveUp = () => {
         if (currentElementIndex === 0) return;
         onSwap(currentElementIndex, currentElementIndex - 1);
@@ -24,26 +28,61 @@ export default function Element({ nome, quantita, currentElementIndex, totalElem
     }
 
     const handleEdit = () => {
-       onEdit(currentElementIndex);
+        onEdit(currentElementIndex);
+    }
+
+    const handleDelete = () => {
+        onDelete(currentElementIndex);
+    }
+
+    function leftSwipeAction(progress: SharedValue<number>, dragValue: SharedValue<number>) {
+        const styleAnimation = useAnimatedStyle(() => ({
+            opacity: progress.value,
+            width: progress.value * 30,
+        }));
+
+        return (
+            <Animated.View style={[styles.deleteElement, styleAnimation]}>
+                <Feather name="trash-2" size={24} color={"#b30000"} />
+            </Animated.View>
+        );
+    }
+
+    function rightSwipeAction(progress: SharedValue<number>, dragValue: SharedValue<number>) {
+        const styleAnimation = useAnimatedStyle(() => ({
+            opacity: progress.value,
+            width: progress.value * 30,
+        }));
+
+        return (
+            <Animated.View style={[styles.deleteElement, styleAnimation]}>
+                <Feather name="trash-2" size={24} color={"#b30000"} />
+            </Animated.View>
+        );
     }
 
     return (
-        <Animated.View style={styles.wrapper} layout={LinearTransition}>
-            <Text style={styles.colorWhite}>{nome}</Text>
-            <Text style={styles.colorWhite}>{quantita}</Text>
-            <View style={styles.actionWrapper}>
-                <Pressable style={styles.actionButton} onPress={handleMoveUp}>
-                    <Feather name="arrow-up" size={24} color={Colors.BIANCO} />
-                </Pressable>
-                <Pressable style={styles.actionButton} onPress={handleMoveDown}>
-                    <Feather name="arrow-down" size={24} color={Colors.BIANCO} />
-                </Pressable>
-                <Pressable style={styles.actionButton} onPress={handleEdit}>
-                    <Feather name="edit-2" size={24} color={Colors.BIANCO} />
-                </Pressable>
-            </View>
-            {/* modal gestito dal componente genitore */}
-        </Animated.View>
+        <ReanimatedSwipeable
+            renderLeftActions={leftSwipeAction}
+            renderRightActions={rightSwipeAction}
+            onSwipeableOpen={handleDelete}
+        >
+            <Animated.View style={styles.wrapper} layout={LinearTransition}>
+                <Text style={styles.colorWhite}>{nome}</Text>
+                <Text style={styles.colorWhite}>{quantita}</Text>
+                <View style={styles.actionWrapper}>
+                    <Pressable style={styles.actionButton} onPress={handleMoveUp}>
+                        <Feather name="arrow-up" size={24} color={Colors.BIANCO} />
+                    </Pressable>
+                    <Pressable style={styles.actionButton} onPress={handleMoveDown}>
+                        <Feather name="arrow-down" size={24} color={Colors.BIANCO} />
+                    </Pressable>
+                    <Pressable style={styles.actionButton} onPress={handleEdit}>
+                        <Feather name="edit-2" size={24} color={Colors.BIANCO} />
+                    </Pressable>
+                </View>
+            </Animated.View>
+        </ReanimatedSwipeable>
     )
 }
 
@@ -74,10 +113,19 @@ const styles = StyleSheet.create({
         gap: 10,
         flexDirection: "row"
     },
-    modal:{
-        flex:1,
-        justifyContent:"center",
-        alignItems:"center",
+    modal: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
         backgroundColor: Colors.GIALLO_CHIARO,
+    },
+    deleteElement:{
+        backgroundColor: "#ff6467",
+        justifyContent: "center",
+        alignItems: "flex-start",
+        borderRadius: 12,
+        marginTop: 10,
+        paddingHorizontal: 12,
+        paddingVertical: 8,
     }
 })

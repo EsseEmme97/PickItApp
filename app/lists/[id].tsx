@@ -11,6 +11,7 @@ import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { Alert, Pressable, StyleSheet, Text, View } from "react-native";
 import Animated, { FadeInUp, LinearTransition, createAnimatedComponent } from "react-native-reanimated";
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 
 export default function singleListPage() {
@@ -133,26 +134,35 @@ export default function singleListPage() {
         })
     }
 
+    const deleteElement = (index: number) => {
+        const filtered = elements.filter((_, i) => i !== index);
+        setElements(filtered);
+        setIsEditChanged(true);
+    }
+
     return (
         <View style={styles.container}>
             <MainBg />
             {isLoading ? <Loader /> : (
                 <View style={styles.ListContainer}>
-                    <Animated.FlatList
-                        data={elements}
-                        keyExtractor={(item: any) => item.id}
-                        renderItem={({ item, index }) => (
-                            <Element
-                                nome={item.nome}
-                                currentElementIndex={index}
-                                totalElements={elements.length}
-                                quantita={item.quantita}
-                                onSwap={swappingElements}
-                                onEdit={openEdit} // passiamo la callback
-                            />
-                        )}
-                        itemLayoutAnimation={LinearTransition}
-                    />
+                    <GestureHandlerRootView>
+                        <Animated.FlatList
+                            data={elements}
+                            keyExtractor={(item: any) => item.id}
+                            renderItem={({ item, index }) => (
+                                <Element
+                                    nome={item.nome}
+                                    currentElementIndex={index}
+                                    totalElements={elements.length}
+                                    quantita={item.quantita}
+                                    onSwap={swappingElements}
+                                    onEdit={openEdit}
+                                    onDelete={deleteElement}
+                                />
+                            )}
+                            itemLayoutAnimation={LinearTransition}
+                        />
+                    </GestureHandlerRootView>
                 </View>
             )}
 
@@ -197,17 +207,17 @@ const styles = StyleSheet.create({
         padding: 10,
         backgroundColor: Colors.VERDE,
     },
-    ListContainer:{
-        flex:0.7
+    ListContainer: {
+        flex: 0.7
     },
-    plusIcon:{
-        position:"absolute",
-        bottom:"20%",
-        right:30,
-        padding:4,
-        backgroundColor:Colors.VERDE,
-        borderRadius:30,
-        justifyContent:"center",
-        alignItems:"center"
+    plusIcon: {
+        position: "absolute",
+        bottom: "20%",
+        right: 30,
+        padding: 4,
+        backgroundColor: Colors.VERDE,
+        borderRadius: 30,
+        justifyContent: "center",
+        alignItems: "center"
     }
 })
