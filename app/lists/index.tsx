@@ -21,7 +21,7 @@ export default function AllListsPage() {
     return (
         <View style={styles.container}>
             <MainBg/>
-            <Text>Tutte le liste</Text>
+            <Text style={styles.title}>Tutte le liste</Text>
             {isLoading ? <Loader /> : <Animated.FlatList
                 data={lists}
                 renderItem={({ item }) => <ListItem {...item} />}
@@ -38,4 +38,11 @@ const styles = StyleSheet.create({
         alignItems:"center",
         gap:10,
     },
+    title:{
+        fontFamily:"Quicksand_400Regular",
+        fontSize:24,
+        fontWeight:"bold",
+        marginTop:20,
+        marginBottom:10,
+    }
 })

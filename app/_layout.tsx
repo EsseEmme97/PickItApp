@@ -6,6 +6,7 @@ import { useEffect } from 'react';
 import 'react-native-reanimated';
 import { Quicksand_400Regular } from '@expo-google-fonts/quicksand/400Regular';
 import CustomTabBar from '@/components/CustomTabBar';
+import { Colors } from '@/constants/Colors';
 
 
 export {
@@ -45,15 +46,31 @@ export default function RootLayout() {
   return <RootLayoutNav />;
 }
 
+const headerOptions = {
+  headerStyle: {
+    backgroundColor: Colors.BIANCO,
+    borderRadius: 20,
+    shadowColor: 'black',
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+  },
+  headerTitleStyle: {
+    fontFamily: 'Quicksand_400Regular',
+    fontSize: 20,
+    color: "black",
+  }
+}
+
 function RootLayoutNav() {
 
   return (
-    <Tabs tabBar= {props=><CustomTabBar {...props}/>}>
-      <Tabs.Screen name="index" options={{ title:"home"}} />
-      <Tabs.Screen name="lists/index" options={{ title: "liste"}} />
-      <Tabs.Screen name="lists/[id]" options={{title:"singola lista", href:null}} />
-      <Tabs.Screen name="newList" options={{ title: "nuovo"}} />
-      <Tabs.Screen name="Costs" options={{ title: "spese"}} />
+    <Tabs tabBar={props => <CustomTabBar {...props} />} screenOptions={headerOptions}>
+      <Tabs.Screen name="index" options={{ title: "home" }} />
+      <Tabs.Screen name="lists/index" options={{ title: "liste" }} />
+      <Tabs.Screen name="lists/[id]" options={{ title: "singola lista", href: null }} />
+      <Tabs.Screen name="newList" options={{ title: "nuovo" }} />
+      <Tabs.Screen name="Costs" options={{ title: "spese" }} />
     </Tabs>
   );
 }

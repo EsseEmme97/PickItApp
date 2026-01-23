@@ -42,7 +42,7 @@ export default function Element({ nome, quantita, currentElementIndex, totalElem
         }));
 
         return (
-            <Animated.View style={[styles.deleteElement, styleAnimation]}>
+            <Animated.View style={[styles.deleteElementLeft, styleAnimation]}>
                 <Feather name="trash-2" size={24} color={"#b30000"} />
             </Animated.View>
         );
@@ -55,7 +55,7 @@ export default function Element({ nome, quantita, currentElementIndex, totalElem
         }));
 
         return (
-            <Animated.View style={[styles.deleteElement, styleAnimation]}>
+            <Animated.View style={[styles.deleteElementRight, styleAnimation]}>
                 <Feather name="trash-2" size={24} color={"#b30000"} />
             </Animated.View>
         );
@@ -119,10 +119,19 @@ const styles = StyleSheet.create({
         alignItems: "center",
         backgroundColor: Colors.GIALLO_CHIARO,
     },
-    deleteElement:{
+    deleteElementLeft: {
         backgroundColor: "#ff6467",
         justifyContent: "center",
         alignItems: "flex-start",
+        borderRadius: 12,
+        marginTop: 10,
+        paddingHorizontal: 12,
+        paddingVertical: 8,
+    },
+    deleteElementRight: {
+        backgroundColor: "#ff6467",
+        justifyContent: "center",
+        alignItems: "flex-end",
         borderRadius: 12,
         marginTop: 10,
         paddingHorizontal: 12,

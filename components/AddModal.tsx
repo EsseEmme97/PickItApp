@@ -1,6 +1,7 @@
 import { Colors } from "@/constants/Colors";
 import Feather from "@expo/vector-icons/Feather";
 import { Modal, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { useState } from "react";
 
 type AddModalProps = {
     visible: boolean;
@@ -21,21 +22,25 @@ export default function AddModal({
     onQuantitaChange,
     onAdd,
 }: AddModalProps) {
+
+    const [isFocused, setIsFocused] = useState< "nome" | "quantita" | null>(null);
     return (
         <Modal visible={visible} transparent={true} animationType="slide" onRequestClose={onClose}>
             <View style={styles.modal}>
                 <TextInput
-                    style={styles.input}
+                    style={[styles.input, isFocused === "nome" && { borderColor: Colors.VERDE }]}
                     value={nome}
                     onChangeText={onNomeChange}
                     placeholder="Nome"
+                    onFocus={()=>setIsFocused("nome")}
                 />
                 <TextInput
-                    style={styles.input}
+                    style={[styles.input, isFocused === "quantita" && { borderColor: Colors.VERDE }]}
                     value={quantita}
                     onChangeText={onQuantitaChange}
                     keyboardType="numeric"
                     placeholder="Quantità"
+                    onFocus={()=>setIsFocused("quantita")}
                 />
                 <Pressable style={styles.button} onPress={onAdd}>
                     <Text style={styles.buttonText}>Aggiungi</Text>

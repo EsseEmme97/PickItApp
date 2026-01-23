@@ -3,21 +3,23 @@ import EditModal from "@/components/EditModal";
 import Element from "@/components/Element";
 import Loader from "@/components/Loader";
 import MainBg from "@/components/MainBg";
+import SaveRestoreControls from "@/components/SaveRestoreControls";
 import { Colors } from "@/constants/Colors";
 import { getSingleList, updateListElements } from "@/db/db";
 import type { List } from "@/types";
 import Feather from "@expo/vector-icons/Feather";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
-import { Alert, Pressable, StyleSheet, Text, View } from "react-native";
-import Animated, { FadeInUp, LinearTransition, createAnimatedComponent } from "react-native-reanimated";
+import { Alert, Pressable, StyleSheet, View } from "react-native";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import Animated, { LinearTransition } from "react-native-reanimated";
 
 
 export default function singleListPage() {
     const { id } = useLocalSearchParams();
     const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [elements, setElements] = useState<List["elementi"]>([])
+    const [elements, setElements] = useState<List["elementi"]>([]);
+    const [resetedElements, setResetedElements] = useState<List["elementi"]>([]);
 
     const genId = () => `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
 
@@ -36,8 +38,7 @@ export default function singleListPage() {
 
     const [isEditChanged, setIsEditChanged] = useState(false);
 
-    // customized save button component with animation
-    const AnimatedPressable = createAnimatedComponent(Pressable);
+    // Save / Restore controls handled by `SaveRestoreControls` component
 
     useEffect(() => {
         setIsLoading(true);
@@ -45,6 +46,7 @@ export default function singleListPage() {
             .then((list) => {
                 const elems = list?.elementi?.map(el => ({ ...el, id: (el as any).id ?? genId() }));
                 setElements(elems as any ?? []);
+                setResetedElements(elems as any ?? []);
             })
             .finally(() => setIsLoading(false));
     }, [id])
@@ -92,8 +94,8 @@ export default function singleListPage() {
         }
         const newEl = { id: genId(), nome: nomeTrim, quantita: qty } as any;
         setElements(prev => [...prev, newEl]);
+        Alert.alert("Successo", "Elemento aggiunto con successo.");
         setIsEditChanged(true);
-        closeAdd();
     }
 
     const closeEdit = () => {
@@ -175,11 +177,14 @@ export default function singleListPage() {
                 onQuantitaChange={setEditQuantita}
                 onSave={saveEdit}
             />
-            {isEditChanged && <AnimatedPressable entering={FadeInUp} onPress={saveListChanges} style={styles.saveButton}><Text style={{
-                color: "white",
-                fontFamily: "Quicksand_400Regular",
-            }}>Salva modifiche</Text>
-            </AnimatedPressable>}
+            <SaveRestoreControls
+                isEditChanged={isEditChanged}
+                onSave={saveListChanges}
+                onRestore={() => {
+                    setElements(resetedElements);
+                    setIsEditChanged(false);
+                }}
+            />
             <Pressable style={styles.plusIcon} onPress={openAdd}>
                 <Feather color={"white"} name="plus" size={24}></Feather>
             </Pressable>
