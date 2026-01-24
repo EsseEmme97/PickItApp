@@ -1,6 +1,6 @@
 import { db } from "@/firebase.config";
 import type { List } from "@/types";
-import { addDoc, collection, doc, getDoc, getDocs, updateDoc, arrayUnion, arrayRemove, runTransaction } from "firebase/firestore";
+import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, updateDoc } from "firebase/firestore";
 
 export async function getLists(): Promise<List[]>{
     try {
@@ -47,14 +47,18 @@ export async function updateListElements(id: string, elementi: List['elementi'])
   await updateDoc(ref, { elementi });
 }
 
-export async function addElementToList(id: string, element: List['elementi'][0]): Promise<void> {
-  const ref = doc(db, "liste", id);
-  await updateDoc(ref, { elementi: arrayUnion(element) });
-}
+export async function deleteList(id: string): Promise<void> {
+    if (!id || typeof id !== "string") {
+        throw new Error("ID non valido fornito a deleteList");
+    }
 
-export async function removeElementFromList(id: string, element: List['elementi'][0]): Promise<void> {
-  const ref = doc(db, "liste", id);
-  await updateDoc(ref, { elementi: arrayRemove(element) });
+    try {
+        const ref = doc(db, "liste", id);
+        await deleteDoc(ref);
+    } catch (error) {
+        console.error(`deleteList error (id=${id}):`, error);
+        throw new Error("Impossibile eliminare la lista dal database.");
+    }
 }
 
 
@@ -74,4 +78,18 @@ export async function seedDatabase(): Promise<void> {
     }
 }
 
-/* console.log(getLists().then(console.log)) */
+
+export async function createList(elementi: List['elementi'] = [], data_creazione?: string): Promise<string> {
+    try {
+        const lists = collection(db, "liste");
+        const dateValue = data_creazione ?? new Date().toLocaleDateString();
+        const docRef = await addDoc(lists, {
+            data_creazione: dateValue,
+            elementi,
+        });
+        return docRef.id;
+    } catch (error) {
+        console.error("createList error:", error);
+        throw new Error("Impossibile creare la nuova lista.");
+    }
+}
