@@ -6,6 +6,7 @@ import type { List } from "@/types";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { Alert, FlatList, Modal, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import Feather from "@expo/vector-icons/Feather";
 
 export default function NewListPage() {
     const router = useRouter();
@@ -87,22 +88,27 @@ export default function NewListPage() {
                 </Pressable>
             </View>
             <Modal visible={modalVisible} transparent animationType="fade">
-                <View style={styles.modalContainer}>
-                    <Text>Seleziona lista</Text>
-                    {isLoading ? <Loader/> : <FlatList 
-                    data={lists}
-                    renderItem={({item})=>{
-                        return (
-                            <Pressable style={styles.createButton} onPress={()=>{ setSelectedListId(item.id); setIsSelected(true); }}>
-                                <Text style={{color: Colors.BIANCO}}>{item.data_creazione}</Text>
-                            </Pressable>
-                        )
-                    }}
-                    />}
-                    <Pressable disabled={!isSelected} onPress={() => handleDuplicate(selectedListId!)}>
-                        <Text>Duplica</Text>
+                <Pressable style={styles.backdrop} onPress={() => setModalVisible(false)}>
+                    <Pressable style={styles.modalContainer} onPress={() => {}}>
+                        <Pressable style={styles.closeButton} onPress={() => setModalVisible(false)}>
+                            <Feather name="x-circle" color="black" size={24} />
+                        </Pressable>
+                        <Text>Seleziona lista</Text>
+                        {isLoading ? <Loader/> : <FlatList 
+                        data={lists}
+                        renderItem={({item})=>{
+                            return (
+                                <Pressable style={styles.createButton} onPress={()=>{ setSelectedListId(item.id); setIsSelected(true); }}>
+                                    <Text style={{color: Colors.BIANCO}}>{item.data_creazione}</Text>
+                                </Pressable>
+                            )
+                        }}
+                        />}
+                        <Pressable disabled={!isSelected} onPress={() => handleDuplicate(selectedListId!)}>
+                            <Text>Duplica</Text>
+                        </Pressable>
                     </Pressable>
-                </View>
+                </Pressable>
             </Modal>
         </View>
     )
@@ -175,9 +181,28 @@ const styles = StyleSheet.create({
         width: "80%",
         backgroundColor: Colors.GIALLO_CHIARO,
         borderRadius:12,
-        marginTop:40,
         alignSelf:"center",
         justifyContent:"center",
-        alignItems:"center"
+        alignItems:"center",
+        padding: 16,
+        paddingTop: 28
+    }
+
+    ,backdrop: {
+        flex: 1,
+        backgroundColor: "rgba(0,0,0,0.5)",
+        justifyContent: "center",
+        alignItems: "center"
+    },
+    closeButton: {
+        position: "absolute",
+        top: 8,
+        right: 8,
+        padding: 6
+    },
+    closeButtonText: {
+        color: Colors.BIANCO,
+        fontSize: 18,
+        fontWeight: "bold"
     }
 })
