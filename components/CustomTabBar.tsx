@@ -44,7 +44,7 @@ export default function CustomTabBar({
     const layout = layouts[visualIndex];
     if (layout) {
       bgWidth.value = withSpring(layout.width);
-      translateX.value = withSpring(layout.x);
+      translateX.value = withSpring(layout.x + 20);
     }
   }, [visualIndex, layouts]);
 

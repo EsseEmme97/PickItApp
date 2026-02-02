@@ -37,7 +37,7 @@ export default function NewListPage() {
         try {
             setIsLoading(true);
             const id = await createList([], trimmed);
-            router.replace(`/lists/${id}`);
+            router.replace(`/lists/`);
         } catch (error) {
             console.error(error);
             Alert.alert("Errore", "Impossibile creare la lista.");
@@ -93,7 +93,7 @@ export default function NewListPage() {
                         <Pressable style={styles.closeButton} onPress={() => setModalVisible(false)}>
                             <Feather name="x-circle" color="black" size={24} />
                         </Pressable>
-                        <Text>Seleziona lista</Text>
+                        <Text style={{fontFamily: "Quicksand_400Regular", marginBottom: 12}}>Seleziona lista</Text>
                         {isLoading ? <Loader/> : <FlatList 
                         data={lists}
                         renderItem={({item})=>{
@@ -104,8 +104,8 @@ export default function NewListPage() {
                             )
                         }}
                         />}
-                        <Pressable disabled={!isSelected} onPress={() => handleDuplicate(selectedListId!)}>
-                            <Text>Duplica</Text>
+                        <Pressable style={{backgroundColor:Colors.GIALLO, padding: 12, borderRadius: 8 }} disabled={!isSelected} onPress={() => handleDuplicate(selectedListId!)}>
+                            <Text style={{fontFamily: "Quicksand_400Regular"}}>Duplica</Text>
                         </Pressable>
                     </Pressable>
                 </Pressable>

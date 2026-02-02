@@ -1,12 +1,13 @@
+import CustomTabBar from '@/components/CustomTabBar';
+import { Colors } from '@/constants/Colors';
+import { Quicksand_400Regular } from '@expo-google-fonts/quicksand/400Regular';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useFonts } from 'expo-font';
 import { Tabs } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
+import { Platform, StatusBar } from 'react-native';
 import 'react-native-reanimated';
-import { Quicksand_400Regular } from '@expo-google-fonts/quicksand/400Regular';
-import CustomTabBar from '@/components/CustomTabBar';
-import { Colors } from '@/constants/Colors';
 
 
 export {
@@ -46,9 +47,13 @@ export default function RootLayout() {
   return <RootLayoutNav />;
 }
 
+const statusBarHeight = Platform.OS === 'android' ? (StatusBar.currentHeight ?? 0) : 0;
+
 const headerOptions = {
   headerStyle: {
     backgroundColor: Colors.BIANCO,
+    paddingTop: statusBarHeight,
+    height: 56 + statusBarHeight,
     borderRadius: 20,
     shadowColor: 'black',
     shadowOffset: { width: 0, height: 10 },
@@ -59,18 +64,22 @@ const headerOptions = {
     fontFamily: 'Quicksand_400Regular',
     fontSize: 20,
     color: "black",
+    marginTop: statusBarHeight ? Math.round(statusBarHeight * 0.2) : 0,
   }
 }
 
 function RootLayoutNav() {
 
   return (
-    <Tabs tabBar={props => <CustomTabBar {...props} />} screenOptions={headerOptions}>
-      <Tabs.Screen name="index" options={{ title: "home" }} />
-      <Tabs.Screen name="lists/index" options={{ title: "liste" }} />
-      <Tabs.Screen name="lists/[id]" options={{ title: "singola lista", href: null }} />
-      <Tabs.Screen name="newList" options={{ title: "nuova" }} />
-      <Tabs.Screen name="Costs" options={{ title: "spese" }} />
-    </Tabs>
+    <>
+      <StatusBar translucent={false} backgroundColor={Colors.BIANCO} barStyle="dark-content" />
+      <Tabs tabBar={props => <CustomTabBar {...props} />} screenOptions={headerOptions}>
+        <Tabs.Screen name="index" options={{ title: "home" }} />
+        <Tabs.Screen name="lists/index" options={{ title: "liste" }} />
+        <Tabs.Screen name="lists/[id]" options={{ title: "singola lista", href: null }} />
+        <Tabs.Screen name="newList" options={{ title: "nuova" }} />
+        <Tabs.Screen name="costs" options={{ title: "spese" }} />
+      </Tabs>
+    </>
   );
 }

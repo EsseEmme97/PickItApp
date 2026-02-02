@@ -1,38 +1,37 @@
-import { StyleSheet, Text, View, ActivityIndicator } from "react-native";
-import { useState, useEffect } from "react";
+import ListItem from "@/components/ListItem";
+import Loader from "@/components/Loader";
+import MainBg from "@/components/MainBg";
 import { getLists } from "@/db/db";
 import type { List } from "@/types";
+import { useIsFocused } from '@react-navigation/native';
+import { useEffect, useState } from "react";
+import { StyleSheet, Text, View } from "react-native";
 import Animated, { LinearTransition } from "react-native-reanimated";
-import ListItem from "@/components/ListItem";
-import MainBg from "@/components/MainBg";
-import Loader from "@/components/Loader";
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 
 export default function AllListsPage() {
     const [lists, setLists] = useState<List[]>([]);
-    const [isLoading, setIsLoading] = useState<boolean>();
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const isFocused = useIsFocused();
 
     useEffect(() => {
         setIsLoading(true);
         getLists().then(setLists).finally(() => setIsLoading(false));
-    }, [])
+    }, [isFocused])
 
 
     return (
-        <GestureHandlerRootView style={{ flex: 1 }}>
-            <View style={styles.container}>
-                <MainBg />
-                <Text style={styles.title}>Tutte le liste</Text>
-                {isLoading ? <Loader /> :
-                    <Animated.FlatList
-                        data={lists}
-                        renderItem={({ item }) => <ListItem {...item} />}
-                        itemLayoutAnimation={LinearTransition}
-                    />
-                }
-            </View>
-        </GestureHandlerRootView>);
+        <View style={styles.container}>
+            <MainBg />
+            <Text style={styles.title}>Tutte le liste</Text>
+            {isLoading ? <Loader /> :
+                <Animated.FlatList
+                    data={lists}
+                    renderItem={({ item }) => <ListItem {...item} />}
+                    itemLayoutAnimation={LinearTransition}
+                />
+            }
+        </View>);
 }
 
 const styles = StyleSheet.create({
