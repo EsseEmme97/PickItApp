@@ -26,6 +26,9 @@ export default function SaveRestoreControls({ isEditChanged, onSave, onRestore }
 
 const styles = StyleSheet.create({
   container: {
+    position: "absolute",
+    bottom: "19%",
+    right: 100,
     justifyContent: "center",
     alignItems: "center",
     flexDirection: "row",

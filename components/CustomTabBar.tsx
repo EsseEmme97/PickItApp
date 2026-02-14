@@ -36,8 +36,13 @@ export default function CustomTabBar({
   const visibleRoutes = state.routes.filter((r) => r.name !== 'lists/[id]');
 
   // find the index of the active route among visible routes
-  const activeKey = state.routes[state.index]?.key;
-  const visualIndex = Math.max(0, visibleRoutes.findIndex((r) => r.key === activeKey));
+  const activeRoute = state.routes[state.index];
+  // when we are inside the hidden detail route, highlight the parent "liste" tab
+  const fallbackKey = activeRoute?.name === 'lists/[id]'
+    ? state.routes.find((r) => r.name === 'lists/index')?.key
+    : undefined;
+  const targetKey = fallbackKey ?? activeRoute?.key;
+  const visualIndex = Math.max(0, visibleRoutes.findIndex((r) => r.key === targetKey));
 
   // when active index or layouts change, animate bg to the measured position
   useEffect(() => {
@@ -140,9 +145,10 @@ export default function CustomTabBar({
 const styles = StyleSheet.create({
   wrapper: {
     position: 'absolute',
-    bottom: 50,
+    bottom: 0,
     flexDirection: 'row',
-    borderRadius: 30,
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
     alignSelf: 'center',
     paddingHorizontal: 20,
     paddingVertical: 10,

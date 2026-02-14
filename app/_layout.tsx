@@ -6,8 +6,9 @@ import { useFonts } from 'expo-font';
 import { Tabs } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
-import { Platform, StatusBar } from 'react-native';
 import 'react-native-reanimated';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { StatusBar } from 'react-native';
 
 
 export {
@@ -47,32 +48,31 @@ export default function RootLayout() {
   return <RootLayoutNav />;
 }
 
-const statusBarHeight = Platform.OS === 'android' ? (StatusBar.currentHeight ?? 0) : 0;
-
 const headerOptions = {
   headerStyle: {
     backgroundColor: Colors.BIANCO,
-    paddingTop: statusBarHeight,
-    height: 56 + statusBarHeight,
-    borderRadius: 20,
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
+    height:70,
     shadowColor: 'black',
     shadowOffset: { width: 0, height: 10 },
     shadowOpacity: 0.1,
     shadowRadius: 10,
+    paddingVertical: 6,
   },
   headerTitleStyle: {
     fontFamily: 'Quicksand_400Regular',
-    fontSize: 20,
+    fontSize: 16,
+    lineHeight: 20,
     color: "black",
-    marginTop: statusBarHeight ? Math.round(statusBarHeight * 0.2) : 0,
   }
 }
 
 function RootLayoutNav() {
 
   return (
-    <>
-      <StatusBar translucent={false} backgroundColor={Colors.BIANCO} barStyle="dark-content" />
+    <SafeAreaView style={{ flex: 1, backgroundColor: Colors.BIANCO }}>
+      <StatusBar barStyle="dark-content" backgroundColor={Colors.BIANCO} />
       <Tabs tabBar={props => <CustomTabBar {...props} />} screenOptions={headerOptions}>
         <Tabs.Screen name="index" options={{ title: "home" }} />
         <Tabs.Screen name="lists/index" options={{ title: "liste" }} />
@@ -80,6 +80,6 @@ function RootLayoutNav() {
         <Tabs.Screen name="newList" options={{ title: "nuova" }} />
         <Tabs.Screen name="costs" options={{ title: "spese" }} />
       </Tabs>
-    </>
+    </SafeAreaView>
   );
 }

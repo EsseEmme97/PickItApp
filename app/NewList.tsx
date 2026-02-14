@@ -175,6 +175,7 @@ const styles = StyleSheet.create({
     duplicateText: {
         fontFamily: "Quicksand_400Regular",
         fontWeight: "bold",
+        textAlign: "center"
     },
     modalContainer: {
         flex: 0.5,

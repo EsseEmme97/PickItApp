@@ -47,7 +47,8 @@ const styles = StyleSheet.create({
         padding: 8,
         marginTop: 10,
         flexDirection: "row",
-        gap:20
+        justifyContent: "space-between",
+        alignItems: "center",
     },
     link: {
         paddingVertical: 6,
