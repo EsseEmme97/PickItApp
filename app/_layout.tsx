@@ -3,12 +3,12 @@ import { Colors } from '@/constants/Colors';
 import { Quicksand_400Regular } from '@expo-google-fonts/quicksand/400Regular';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useFonts } from 'expo-font';
-import { Tabs } from 'expo-router';
+import { Tabs, useRouter } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
+import { StatusBar, TouchableOpacity } from 'react-native';
 import 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { StatusBar } from 'react-native';
 
 
 export {
@@ -48,7 +48,7 @@ export default function RootLayout() {
   return <RootLayoutNav />;
 }
 
-const headerOptions = {
+const baseHeaderOptions = {
   headerStyle: {
     backgroundColor: Colors.BIANCO,
     borderBottomLeftRadius: 20,
@@ -60,20 +60,45 @@ const headerOptions = {
     shadowRadius: 10,
     paddingVertical: 6,
   },
+  headerTitleAlign: "center" as const,
   headerTitleStyle: {
     fontFamily: 'Quicksand_400Regular',
     fontSize: 16,
     lineHeight: 20,
     color: "black",
+    fontWeight: "bold",
   }
+} as const;
+
+function BackButton({ onPress }: { onPress: () => void }) {
+  return (
+    <TouchableOpacity
+      accessibilityLabel="Go back"
+      onPress={onPress}
+      style={{ paddingHorizontal: 12 }}
+      hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+    >
+      <FontAwesome name="chevron-left" size={20} color="black" />
+    </TouchableOpacity>
+  );
 }
 
 function RootLayoutNav() {
+  const router = useRouter();
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: Colors.BIANCO }}>
       <StatusBar barStyle="dark-content" backgroundColor={Colors.BIANCO} />
-      <Tabs tabBar={props => <CustomTabBar {...props} />} screenOptions={headerOptions}>
+      <Tabs
+        backBehavior='history'
+        tabBar={props => <CustomTabBar {...props} />}
+        screenOptions={({ navigation }) => ({
+          ...baseHeaderOptions,
+          headerLeft: navigation.canGoBack() ? () => (
+            <BackButton onPress={() => router.back()} />
+          ) : undefined,
+        })}
+      >
         <Tabs.Screen name="index" options={{ title: "home" }} />
         <Tabs.Screen name="lists/index" options={{ title: "liste" }} />
         <Tabs.Screen name="lists/[id]" options={{ title: "singola lista", href: null }} />

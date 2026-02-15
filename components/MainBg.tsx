@@ -2,7 +2,7 @@ import { ImageBackground, StyleSheet } from "react-native"
 
 export default function MainBg(){
     return (
-        <ImageBackground resizeMode="repeat" style={styles.bgImage} source={require("@/assets/images/main_bg.png")}/>
+        <ImageBackground resizeMode="cover" style={styles.bgImage} source={require("@/assets/images/main_bg.png")}/>
     )
 }
 

@@ -71,7 +71,7 @@ export default function singleListPage() {
 
     const openAdd = () => {
         setAddNome("");
-        setAddQuantita("0");
+        setAddQuantita("");
         setAddModalVisible(true);
     }
 
@@ -205,7 +205,8 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: "flex-start",
-        alignItems: "center"
+        alignItems: "center",
+        paddingHorizontal: 20,
     },
     saveButton: {
         borderRadius: 12,
@@ -213,7 +214,7 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.VERDE,
     },
     ListContainer: {
-        flex: 0.7
+        flex: 1
     },
     plusIcon: {
         position: "absolute",

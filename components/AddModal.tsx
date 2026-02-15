@@ -56,7 +56,6 @@ export default function AddModal({
 const styles = StyleSheet.create({
     modal: {
         width: "80%",
-        height: "80%",
         justifyContent: "center",
         alignItems: "center",
         backgroundColor: Colors.BIANCO,
@@ -64,6 +63,7 @@ const styles = StyleSheet.create({
         borderRadius: 30,
         alignSelf: "center",
         marginVertical: "auto",
+        paddingVertical: 60,
     },
     input: {
         width: "80%",

@@ -68,8 +68,10 @@ export default function Element({ nome, quantita, currentElementIndex, totalElem
             onSwipeableOpen={handleDelete}
         >
             <Animated.View style={styles.wrapper} layout={LinearTransition}>
-                <Text style={styles.colorWhite}>{nome}</Text>
-                <Text style={styles.colorWhite}>{quantita}</Text>
+                <View style={styles.descriptionContainer}>
+                    <Text style={styles.colorWhite}>{nome}</Text>
+                    <Text style={styles.colorWhite}>{quantita}</Text>
+                </View>
                 <View style={styles.actionWrapper}>
                     <Pressable style={styles.actionButton} onPress={handleMoveUp}>
                         <Feather name="arrow-up" size={24} color={Colors.BIANCO} />
@@ -96,6 +98,11 @@ const styles = StyleSheet.create({
         borderRadius: 12,
         padding: 8,
         marginTop: 10,
+        width: "100%",
+    },
+    descriptionContainer: {
+        flexDirection: "row",
+        gap: 30,
     },
     colorWhite: {
         color: "#fff",

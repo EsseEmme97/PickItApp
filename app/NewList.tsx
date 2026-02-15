@@ -127,7 +127,8 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 20,
         marginBottom: 10,
-        fontFamily: "Quicksand_400Regular"
+        fontFamily: "Quicksand_400Regular",
+        fontWeight: "bold"
     },
     input: {
         borderWidth: 1,

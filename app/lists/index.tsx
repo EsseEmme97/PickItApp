@@ -21,17 +21,19 @@ export default function AllListsPage() {
 
 
     return (
-        <View style={styles.container}>
+        <>
             <MainBg />
-            <Text style={styles.title}>Tutte le liste</Text>
-            {isLoading ? <Loader /> :
-                <Animated.FlatList
-                    data={lists}
-                    renderItem={({ item }) => <ListItem {...item} />}
-                    itemLayoutAnimation={LinearTransition}
-                />
-            }
-        </View>);
+            <View style={styles.container}>
+                <Text style={styles.title}>Tutte le liste</Text>
+                {isLoading ? <Loader /> :
+                    <Animated.FlatList
+                        data={lists}
+                        renderItem={({ item }) => <ListItem {...item} />}
+                        itemLayoutAnimation={LinearTransition}
+                    />
+                }
+            </View>
+        </>);
 }
 
 const styles = StyleSheet.create({
@@ -40,6 +42,7 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         gap: 10,
+        paddingHorizontal: 20,
     },
     title: {
         fontFamily: "Quicksand_400Regular",
