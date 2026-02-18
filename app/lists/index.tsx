@@ -17,7 +17,11 @@ export default function AllListsPage() {
     useEffect(() => {
         setIsLoading(true);
         getLists().then(setLists).finally(() => setIsLoading(false));
-    }, [isFocused])
+    }, [isFocused]);
+
+    const handleDelete = (id: string) => {
+        setLists(prev => prev.filter(list => list.id !== id));
+    };
 
 
     return (
@@ -28,7 +32,7 @@ export default function AllListsPage() {
                 {isLoading ? <Loader /> :
                     <Animated.FlatList
                         data={lists}
-                        renderItem={({ item }) => <ListItem {...item} />}
+                        renderItem={({ item }) => <ListItem {...item} onDelete={() => handleDelete(item.id)} />}
                         itemLayoutAnimation={LinearTransition}
                     />
                 }

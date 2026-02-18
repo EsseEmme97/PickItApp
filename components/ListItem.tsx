@@ -7,7 +7,11 @@ import { StyleSheet, Text, View } from "react-native";
 import Animated, { LinearTransition, useAnimatedStyle } from "react-native-reanimated";
 import { Alert } from "react-native";
 
-export default function ListItem({ data_creazione, id }: List) {
+type ListItemProps = List & {
+    onDelete: () => void; // callback to parent to remove this item from the list
+}
+
+export default function ListItem({ data_creazione, id, onDelete }: ListItemProps) {
     const handleDelete = async () => {
         if (!id) return;
         try {
@@ -19,6 +23,7 @@ export default function ListItem({ data_creazione, id }: List) {
                     text: "Elimina",
                     onPress: async () => {
                         await deleteList(id);
+                        onDelete();
                     },
                     style: "destructive"
                 }

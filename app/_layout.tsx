@@ -9,6 +9,7 @@ import { useEffect } from 'react';
 import { StatusBar, TouchableOpacity } from 'react-native';
 import 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import AuthProvider from "@/components/auth/AuthProvider";
 
 
 export {
@@ -53,7 +54,7 @@ const baseHeaderOptions = {
     backgroundColor: Colors.BIANCO,
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
-    height:70,
+    height: 70,
     shadowColor: 'black',
     shadowOffset: { width: 0, height: 10 },
     shadowOpacity: 0.1,
@@ -88,23 +89,26 @@ function RootLayoutNav() {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: Colors.BIANCO }}>
-      <StatusBar barStyle="dark-content" backgroundColor={Colors.BIANCO} />
-      <Tabs
-        backBehavior='history'
-        tabBar={props => <CustomTabBar {...props} />}
-        screenOptions={({ navigation }) => ({
-          ...baseHeaderOptions,
-          headerLeft: navigation.canGoBack() ? () => (
-            <BackButton onPress={() => router.back()} />
-          ) : undefined,
-        })}
-      >
-        <Tabs.Screen name="index" options={{ title: "home" }} />
-        <Tabs.Screen name="lists/index" options={{ title: "liste" }} />
-        <Tabs.Screen name="lists/[id]" options={{ title: "singola lista", href: null }} />
-        <Tabs.Screen name="newList" options={{ title: "nuova" }} />
-        <Tabs.Screen name="costs" options={{ title: "spese" }} />
-      </Tabs>
+      <AuthProvider>
+        <StatusBar barStyle="dark-content" backgroundColor={Colors.BIANCO} />
+        <Tabs
+          backBehavior='history'
+          tabBar={props => <CustomTabBar {...props} />}
+          screenOptions={({ navigation }) => ({
+            ...baseHeaderOptions,
+            headerLeft: navigation.canGoBack() ? () => (
+              <BackButton onPress={() => router.back()} />
+            ) : undefined,
+          })}
+        >
+          <Tabs.Screen name="index" options={{ title: "home" }} />
+          <Tabs.Screen name="lists/index" options={{ title: "liste" }} />
+          <Tabs.Screen name="lists/[id]" options={{ title: "singola lista", href: null }} />
+          <Tabs.Screen name="newList" options={{ title: "nuova" }} />
+          <Tabs.Screen name="costs" options={{ title: "spese" }} />
+          <Tabs.Screen name="login" options={{ title: "login", href: null, headerShown: false }} />
+        </Tabs>
+      </AuthProvider>
     </SafeAreaView>
   );
 }
