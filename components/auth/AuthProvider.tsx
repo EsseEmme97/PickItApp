@@ -2,6 +2,7 @@ import { auth } from "@/firebase.config";
 import {
     onAuthStateChanged,
     signInAnonymously,
+    signInWithEmailAndPassword,
     signOut,
     User,
 } from "firebase/auth";
@@ -21,6 +22,7 @@ type AuthContextValue = {
     loading: boolean;
     error: Error | null;
     signInAnonymously: () => Promise<void>;
+    signInWithEmail: (email: string, password: string) => Promise<void>;
     signOut: () => Promise<void>;
 };
 
@@ -41,11 +43,24 @@ export default function AuthProvider({
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<Error | null>(null);
 
-    const SignIn = useCallback(async () => {
+    const signInAnonymouslyLocal = useCallback(async () => {
         try {
             await signInAnonymously(auth);
             setError(null);
         } catch (err) {
+            const errorObject = err as Error;
+            setError(errorObject);
+            setLoading(false);
+            throw errorObject;
+        }
+    }, []);
+
+    const signInWithEmail = useCallback(async (email: string, password: string) => {
+        try {
+            await signInWithEmailAndPassword(auth, email, password);
+            setError(null);
+        }
+        catch (err) {
             const errorObject = err as Error;
             setError(errorObject);
             setLoading(false);
@@ -66,15 +81,14 @@ export default function AuthProvider({
             }
         );
 
-        if (!auth.currentUser) {
-            void SignIn();
-        } else {
+        // Just check the current user state, don't auto-sign-in
+        if (auth.currentUser) {
             setUser(auth.currentUser);
             setLoading(false);
         }
 
         return unsubscribe;
-    }, [SignIn]);
+    }, []);
 
     const handleSignOut = useCallback(async () => {
         setLoading(true);
@@ -95,10 +109,11 @@ export default function AuthProvider({
             userId: user?.uid ?? null,
             loading,
             error,
-            signInAnonymously: SignIn,
+            signInAnonymously: signInAnonymouslyLocal,
+            signInWithEmail: signInWithEmail,
             signOut: handleSignOut,
         }),
-        [user, loading, error, SignIn, handleSignOut]
+        [user, loading, error, signInAnonymouslyLocal, signInWithEmail, handleSignOut]
     );
 
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

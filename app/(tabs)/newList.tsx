@@ -3,10 +3,10 @@ import MainBg from "@/components/MainBg";
 import { Colors } from "@/constants/Colors";
 import { createList, getLists } from "@/db/db";
 import type { List } from "@/types";
+import Feather from "@expo/vector-icons/Feather";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { Alert, FlatList, Modal, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
-import Feather from "@expo/vector-icons/Feather";
 
 export default function NewListPage() {
     const router = useRouter();
@@ -15,7 +15,7 @@ export default function NewListPage() {
     const [lists, setLists] = useState<List[]>([]);
     const [modalVisible, setModalVisible] = useState<boolean>(false);
     const [selectedListId, setSelectedListId] = useState<string | null>(null);
-    const [isSelected,setIsSelected] = useState<boolean>(false);    
+    const [isSelected,setIsSelected] = useState<boolean>(false);
 
     useEffect(() => {
         setIsLoading(true);

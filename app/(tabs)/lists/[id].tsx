@@ -1,4 +1,4 @@
-import AddModal from "@/components/AddModal";
+﻿import AddModal from "@/components/AddModal";
 import EditModal from "@/components/EditModal";
 import Element from "@/components/Element";
 import Loader from "@/components/Loader";
@@ -85,11 +85,11 @@ export default function singleListPage() {
         const nomeTrim = addNome.trim();
         const qty = parseInt(addQuantita, 10);
         if (!nomeTrim) {
-            Alert.alert("Errore", "Il nome non può essere vuoto.");
+            Alert.alert("Errore", "Il nome non pu├▓ essere vuoto.");
             return;
         }
         if (Number.isNaN(qty) || qty <= 0) {
-            Alert.alert("Errore", "Inserisci una quantità valida (> 0).");
+            Alert.alert("Errore", "Inserisci una quantit├á valida (> 0).");
             return;
         }
         const newEl = { id: genId(), nome: nomeTrim, quantita: qty } as any;
@@ -110,11 +110,11 @@ export default function singleListPage() {
         const nomeTrim = editNome.trim();
         const qty = parseInt(editQuantita, 10);
         if (!nomeTrim) {
-            Alert.alert("Errore", "Il nome non può essere vuoto.");
+            Alert.alert("Errore", "Il nome non pu├▓ essere vuoto.");
             return;
         }
         if (Number.isNaN(qty) || qty <= 0) {
-            Alert.alert("Errore", "Inserisci una quantità valida (> 0).");
+            Alert.alert("Errore", "Inserisci una quantit├á valida (> 0).");
             return;
         }
         if (editIndex === null) {

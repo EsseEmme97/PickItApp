@@ -13,7 +13,6 @@ export default function AllListsPage() {
     const [lists, setLists] = useState<List[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const isFocused = useIsFocused();
-
     useEffect(() => {
         setIsLoading(true);
         getLists().then(setLists).finally(() => setIsLoading(false));

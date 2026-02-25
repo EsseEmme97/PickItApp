@@ -1,19 +1,11 @@
-import { StyleSheet, View, } from "react-native";
-import { Link, RelativePathString } from "expo-router";
-import { Colors } from "@/constants/Colors";
-import Animated, { FadeInUp } from "react-native-reanimated";
-import { createAnimatedComponent } from "react-native-reanimated";
 import MainBg from "@/components/MainBg";
-import { useAuthContext } from "@/components/auth/AuthProvider";
-import { Redirect } from "expo-router";
+import { Colors } from "@/constants/Colors";
+import { Link } from "expo-router";
+import { StyleSheet, View, } from "react-native";
+import Animated, { createAnimatedComponent, FadeInUp } from "react-native-reanimated";
 
 export default function Index() {
     const AnimatedLink= createAnimatedComponent(Link);
-    const {isAuthenticated} = useAuthContext();
-
-    if (!isAuthenticated) {
-        return <Redirect href={"/login" as RelativePathString} />
-    };
     return (
         <View style={styles.container}>
             <MainBg />
