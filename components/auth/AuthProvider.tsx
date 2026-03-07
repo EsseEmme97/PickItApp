@@ -1,4 +1,4 @@
-import { auth } from "@/firebase.config";
+import { auth, firebaseInitError } from "@/firebase.config";
 import {
     onAuthStateChanged,
     signInAnonymously,
@@ -43,9 +43,20 @@ export default function AuthProvider({
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<Error | null>(null);
 
+    const getAuthOrThrow = useCallback(() => {
+        if (auth) {
+            return auth;
+        }
+
+        const startupError = firebaseInitError ?? new Error("Firebase Auth unavailable.");
+        setError(startupError);
+        setLoading(false);
+        throw startupError;
+    }, []);
+
     const signInAnonymouslyLocal = useCallback(async () => {
         try {
-            await signInAnonymously(auth);
+            await signInAnonymously(getAuthOrThrow());
             setError(null);
         } catch (err) {
             const errorObject = err as Error;
@@ -53,11 +64,11 @@ export default function AuthProvider({
             setLoading(false);
             throw errorObject;
         }
-    }, []);
+    }, [getAuthOrThrow]);
 
     const signInWithEmail = useCallback(async (email: string, password: string) => {
         try {
-            await signInWithEmailAndPassword(auth, email, password);
+            await signInWithEmailAndPassword(getAuthOrThrow(), email, password);
             setError(null);
         }
         catch (err) {
@@ -66,9 +77,15 @@ export default function AuthProvider({
             setLoading(false);
             throw errorObject;
         }
-    }, []);
+    }, [getAuthOrThrow]);
 
     useEffect(() => {
+        if (!auth) {
+            setError(firebaseInitError ?? new Error("Firebase Auth unavailable."));
+            setLoading(false);
+            return;
+        }
+
         const unsubscribe = onAuthStateChanged(
             auth,
             (currentUser) => {
@@ -93,7 +110,7 @@ export default function AuthProvider({
     const handleSignOut = useCallback(async () => {
         setLoading(true);
         try {
-            await signOut(auth);
+            await signOut(getAuthOrThrow());
             setError(null);
         } catch (err) {
             setError(err as Error);
@@ -101,7 +118,7 @@ export default function AuthProvider({
         } finally {
             setLoading(false);
         }
-    }, []);
+    }, [getAuthOrThrow]);
 
     const value = useMemo<AuthContextValue>(
         () => ({

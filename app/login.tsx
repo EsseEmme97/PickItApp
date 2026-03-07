@@ -1,12 +1,12 @@
 import { useAuthContext } from "@/components/auth/AuthProvider";
+import Loader from "@/components/Loader";
 import MainBg from "@/components/MainBg";
 import { Colors } from "@/constants/Colors";
 import { useState } from "react";
 import { Alert, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
-import Loader from "@/components/Loader";
 
 export default function LoginPage() {
-    const { signInAnonymously, signInWithEmail } = useAuthContext();
+    const { signInAnonymously, signInWithEmail, error } = useAuthContext();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [isLoading, setIsLoading] = useState(false);
@@ -44,6 +44,7 @@ export default function LoginPage() {
                 <Loader /> :
                 <>
                     <Text style={styles.text}>Entra con mail e password</Text>
+                    {error ? <Text style={styles.errorText}>{error.message}</Text> : null}
                     <View style={styles.form}>
                         <TextInput
                             style={styles.input}
@@ -91,6 +92,14 @@ const styles = StyleSheet.create({
         gap: 10,
         marginBottom: 20,
         alignItems: "center",
+    },
+    errorText: {
+        width: "80%",
+        marginBottom: 16,
+        color: "#b42318",
+        textAlign: "center",
+        fontFamily: "Quicksand_400Regular",
+        fontSize: 13,
     },
     input: {
         width: "100%",

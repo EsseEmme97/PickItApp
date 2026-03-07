@@ -1,10 +1,18 @@
-import { db } from "@/firebase.config";
+import { db, firebaseInitError } from "@/firebase.config";
 import type { List } from "@/types";
-import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, updateDoc } from "firebase/firestore";
+import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, updateDoc, type Firestore } from "firebase/firestore";
+
+function getDbOrThrow(): Firestore {
+    if (db) {
+        return db;
+    }
+
+    throw firebaseInitError ?? new Error("Firebase Firestore unavailable.");
+}
 
 export async function getLists(): Promise<List[]>{
     try {
-        const lists = collection(db, "liste");
+        const lists = collection(getDbOrThrow(), "liste");
         const querySnapshot = await getDocs(lists);
         if (!querySnapshot || !Array.isArray(querySnapshot.docs)) return [];
         const formattedLists = querySnapshot.docs.map((doc) => {
@@ -24,7 +32,7 @@ export async function getSingleList(id:string): Promise<List>{
     }
 
     try {
-        const lists = collection(db, "liste");
+        const lists = collection(getDbOrThrow(), "liste");
         const singleDocRef = doc(lists, id);
         const singleDocSnap = await getDoc(singleDocRef);
 
@@ -43,7 +51,7 @@ export async function getSingleList(id:string): Promise<List>{
 };
 
 export async function updateListElements(id: string, elementi: List['elementi']): Promise<void> {
-  const ref = doc(db, "liste", id);
+    const ref = doc(getDbOrThrow(), "liste", id);
   await updateDoc(ref, { elementi });
 }
 
@@ -53,7 +61,7 @@ export async function deleteList(id: string): Promise<void> {
     }
 
     try {
-        const ref = doc(db, "liste", id);
+        const ref = doc(getDbOrThrow(), "liste", id);
         await deleteDoc(ref);
     } catch (error) {
         console.error(`deleteList error (id=${id}):`, error);
@@ -64,7 +72,7 @@ export async function deleteList(id: string): Promise<void> {
 
 export async function seedDatabase(): Promise<void> {
     try {
-        const lists = collection(db, "liste");
+        const lists = collection(getDbOrThrow(), "liste");
         await addDoc(lists, {
             data_creazione: new Date().toLocaleDateString(),
             elementi: [
@@ -81,7 +89,7 @@ export async function seedDatabase(): Promise<void> {
 
 export async function createList(elementi: List['elementi'] = [], data_creazione?: string): Promise<string> {
     try {
-        const lists = collection(db, "liste");
+        const lists = collection(getDbOrThrow(), "liste");
         const dateValue = data_creazione ?? new Date().toLocaleDateString();
         const docRef = await addDoc(lists, {
             data_creazione: dateValue,
