@@ -8,6 +8,9 @@ import { useEffect, useState } from "react";
 import { Alert, FlatList, Modal, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import Feather from "@expo/vector-icons/Feather";
 
+const MODAL_LIST_MAX_HEIGHT = 260;
+const MODAL_LIST_BOTTOM_PADDING = 20;
+
 export default function NewListPage() {
     const router = useRouter();
     const [date, setDate] = useState<string>(new Date().toLocaleDateString());
@@ -214,13 +217,13 @@ const styles = StyleSheet.create({
         fontWeight: "bold"
     },
     listWrapper: {
-        maxHeight: 260,
+        maxHeight: MODAL_LIST_MAX_HEIGHT,
         width: "100%",
     },
     list: {
         width: "100%",
     },
     listContent: {
-        paddingBottom: 20,
+        paddingBottom: MODAL_LIST_BOTTOM_PADDING,
     }
 })

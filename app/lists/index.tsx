@@ -8,6 +8,8 @@ import { useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import Animated, { LinearTransition } from "react-native-reanimated";
 
+const LIST_CONTENT_BOTTOM_PADDING = 40;
+
 
 export default function AllListsPage() {
     const [lists, setLists] = useState<List[]>([]);
@@ -64,6 +66,6 @@ const styles = StyleSheet.create({
         width: "100%",
     },
     listContent: {
-        paddingBottom: 40,
+        paddingBottom: LIST_CONTENT_BOTTOM_PADDING,
     }
 })

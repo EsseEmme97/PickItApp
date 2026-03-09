@@ -14,6 +14,8 @@ import { Alert, Pressable, StyleSheet, View } from "react-native";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import Animated, { LinearTransition } from "react-native-reanimated";
 
+const LIST_CONTENT_BOTTOM_PADDING = 200;
+
 
 export default function singleListPage() {
     const { id } = useLocalSearchParams();
@@ -227,7 +229,7 @@ const styles = StyleSheet.create({
         width: "100%",
     },
     listContent: {
-        paddingBottom: 200,
+        paddingBottom: LIST_CONTENT_BOTTOM_PADDING,
     },
     plusIcon: {
         position: "absolute",
