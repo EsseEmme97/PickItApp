@@ -151,6 +151,7 @@ export default function singleListPage() {
                 <View style={styles.ListContainer}>
                     <GestureHandlerRootView style={styles.listWrapper}>
                         <Animated.FlatList
+                            showsVerticalScrollIndicator={false}
                             style={styles.list}
                             data={elements}
                             keyExtractor={(item: any) => item.id}

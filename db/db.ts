@@ -90,7 +90,7 @@ export async function seedDatabase(): Promise<void> {
 export async function createList(elementi: List['elementi'] = [], data_creazione?: string): Promise<string> {
     try {
         const lists = collection(getDbOrThrow(), "liste");
-        const dateValue = data_creazione ?? new Date().toLocaleDateString();
+        const dateValue = data_creazione ?? new Date().toLocaleDateString("it-IT");
         const docRef = await addDoc(lists, {
             data_creazione: dateValue,
             elementi,

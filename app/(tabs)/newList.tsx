@@ -100,6 +100,7 @@ export default function NewListPage() {
                         {isLoading ? <Loader/> : (
                             <View style={styles.listWrapper}>
                                 <FlatList 
+                                    showsVerticalScrollIndicator={false}
                                     style={styles.list}
                                     contentContainerStyle={styles.listContent}
                                     data={lists}

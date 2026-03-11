@@ -66,6 +66,8 @@ export default function Element({ nome, quantita, currentElementIndex, totalElem
             renderLeftActions={leftSwipeAction}
             renderRightActions={rightSwipeAction}
             onSwipeableOpen={handleDelete}
+            leftThreshold={100}
+            rightThreshold={100}
         >
             <Animated.View style={styles.wrapper} layout={LinearTransition}>
                 <View style={styles.descriptionContainer}>

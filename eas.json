@@ -17,10 +17,8 @@
       "distribution": "internal",
       "android": {
         "buildType": "apk",
-        "image": "latest"
-      },
-      "env": {
-        "EXPO_NO_HERMES_X86": "1"
+        "image": "latest",
+        "gradleCommand": ":app:assembleRelease"
       }
     }
   },

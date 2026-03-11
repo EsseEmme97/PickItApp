@@ -32,6 +32,7 @@ export default function AllListsPage() {
                 <Text style={styles.title}>Tutte le liste</Text>
                 {isLoading ? <Loader /> :
                     <Animated.FlatList
+                        showsVerticalScrollIndicator={false}
                         data={lists}
                         renderItem={({ item }) => <ListItem {...item} onDelete={() => handleDelete(item.id)} />}
                         itemLayoutAnimation={LinearTransition}
