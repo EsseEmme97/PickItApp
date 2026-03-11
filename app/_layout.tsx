@@ -3,14 +3,14 @@ import { Colors } from '@/constants/Colors';
 import { Quicksand_400Regular } from '@expo-google-fonts/quicksand/400Regular';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useFonts } from 'expo-font';
+import * as NavigationBar from 'expo-navigation-bar';
 import type { RelativePathString } from 'expo-router';
 import { Stack, useRouter, useSegments } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
-import { StatusBar } from 'react-native';
+import { Platform, StatusBar } from 'react-native';
 import 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
-
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -40,6 +40,12 @@ export default function RootLayout() {
       SplashScreen.hideAsync();
     }
   }, [loaded]);
+
+  useEffect(() => {
+    if (Platform.OS === 'android') {
+      NavigationBar.setStyle('light');
+    }
+  }, []);
 
   if (!loaded) {
     return null;

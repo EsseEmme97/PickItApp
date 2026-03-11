@@ -23,7 +23,8 @@
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "package": "com.esseemme97.pickItApp"
+      "package": "com.esseemme97.pickItApp",
+      "enableProguardInReleaseBuilds": true
     },
     "web": {
       "bundler": "metro",

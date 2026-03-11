@@ -10,7 +10,7 @@ const baseHeaderOptions = {
     backgroundColor: Colors.BIANCO,
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
-    height: 50,
+    height: 70,
     shadowColor: 'black',
     shadowOffset: { width: 0, height: 10 },
     shadowOpacity: 0.1,

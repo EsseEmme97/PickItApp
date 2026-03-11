@@ -16,7 +16,11 @@
       "environment": "production",
       "distribution": "internal",
       "android": {
-        "buildType": "apk"
+        "buildType": "apk",
+        "image": "latest"
+      },
+      "env": {
+        "EXPO_NO_HERMES_X86": "1"
       }
     }
   },
