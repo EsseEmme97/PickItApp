@@ -14,6 +14,8 @@ import { Alert, Pressable, StyleSheet, View } from "react-native";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import Animated, { LinearTransition } from "react-native-reanimated";
 
+const LIST_CONTENT_BOTTOM_PADDING = 200;
+
 
 export default function singleListPage() {
     const { id } = useLocalSearchParams();
@@ -147,8 +149,9 @@ export default function singleListPage() {
             <MainBg />
             {isLoading ? <Loader /> : (
                 <View style={styles.ListContainer}>
-                    <GestureHandlerRootView>
+                    <GestureHandlerRootView style={styles.listWrapper}>
                         <Animated.FlatList
+                            style={styles.list}
                             data={elements}
                             keyExtractor={(item: any) => item.id}
                             renderItem={({ item, index }) => (
@@ -162,6 +165,7 @@ export default function singleListPage() {
                                     onDelete={deleteElement}
                                 />
                             )}
+                            contentContainerStyle={styles.listContent}
                             itemLayoutAnimation={LinearTransition}
                         />
                     </GestureHandlerRootView>
@@ -215,6 +219,17 @@ const styles = StyleSheet.create({
     },
     ListContainer: {
         flex: 1
+    },
+    listWrapper: {
+        flex: 1,
+        width: "100%",
+    },
+    list: {
+        flex: 1,
+        width: "100%",
+    },
+    listContent: {
+        paddingBottom: LIST_CONTENT_BOTTOM_PADDING,
     },
     plusIcon: {
         position: "absolute",

@@ -8,6 +8,8 @@ import { useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import Animated, { LinearTransition } from "react-native-reanimated";
 
+const LIST_CONTENT_BOTTOM_PADDING = 40;
+
 
 export default function AllListsPage() {
     const [lists, setLists] = useState<List[]>([]);
@@ -26,11 +28,15 @@ export default function AllListsPage() {
             <View style={styles.container}>
                 <Text style={styles.title}>Tutte le liste</Text>
                 {isLoading ? <Loader /> :
-                    <Animated.FlatList
-                        data={lists}
-                        renderItem={({ item }) => <ListItem {...item} />}
-                        itemLayoutAnimation={LinearTransition}
-                    />
+                    <View style={styles.listWrapper}>
+                        <Animated.FlatList
+                            style={styles.list}
+                            contentContainerStyle={styles.listContent}
+                            data={lists}
+                            renderItem={({ item }) => <ListItem {...item} />}
+                            itemLayoutAnimation={LinearTransition}
+                        />
+                    </View>
                 }
             </View>
         </>);
@@ -50,5 +56,16 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         marginTop: 20,
         marginBottom: 10,
+    },
+    listWrapper: {
+        flex: 1,
+        width: "100%",
+    },
+    list: {
+        flex: 1,
+        width: "100%",
+    },
+    listContent: {
+        paddingBottom: LIST_CONTENT_BOTTOM_PADDING,
     }
 })

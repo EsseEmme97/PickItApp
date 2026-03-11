@@ -8,6 +8,9 @@ import { useEffect, useState } from "react";
 import { Alert, FlatList, Modal, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import Feather from "@expo/vector-icons/Feather";
 
+const MODAL_LIST_MAX_HEIGHT = 260;
+const MODAL_LIST_BOTTOM_PADDING = 20;
+
 export default function NewListPage() {
     const router = useRouter();
     const [date, setDate] = useState<string>(new Date().toLocaleDateString());
@@ -94,16 +97,22 @@ export default function NewListPage() {
                             <Feather name="x-circle" color="black" size={24} />
                         </Pressable>
                         <Text style={{fontFamily: "Quicksand_400Regular", marginBottom: 12}}>Seleziona lista</Text>
-                        {isLoading ? <Loader/> : <FlatList 
-                        data={lists}
-                        renderItem={({item})=>{
-                            return (
-                                <Pressable style={styles.createButton} onPress={()=>{ setSelectedListId(item.id); setIsSelected(true); }}>
-                                    <Text style={{color: Colors.BIANCO}}>{item.data_creazione}</Text>
-                                </Pressable>
-                            )
-                        }}
-                        />}
+                        {isLoading ? <Loader/> : (
+                            <View style={styles.listWrapper}>
+                                <FlatList 
+                                    style={styles.list}
+                                    contentContainerStyle={styles.listContent}
+                                    data={lists}
+                                    renderItem={({item})=>{
+                                        return (
+                                            <Pressable style={styles.createButton} onPress={()=>{ setSelectedListId(item.id); setIsSelected(true); }}>
+                                                <Text style={{color: Colors.BIANCO}}>{item.data_creazione}</Text>
+                                            </Pressable>
+                                        )
+                                    }}
+                                />
+                            </View>
+                        )}
                         <Pressable style={{backgroundColor:Colors.GIALLO, padding: 12, borderRadius: 8 }} disabled={!isSelected} onPress={() => handleDuplicate(selectedListId!)}>
                             <Text style={{fontFamily: "Quicksand_400Regular"}}>Duplica</Text>
                         </Pressable>
@@ -206,5 +215,15 @@ const styles = StyleSheet.create({
         color: Colors.BIANCO,
         fontSize: 18,
         fontWeight: "bold"
+    },
+    listWrapper: {
+        maxHeight: MODAL_LIST_MAX_HEIGHT,
+        width: "100%",
+    },
+    list: {
+        width: "100%",
+    },
+    listContent: {
+        paddingBottom: MODAL_LIST_BOTTOM_PADDING,
     }
 })
