@@ -1,12 +1,11 @@
-import { StyleSheet, View, } from "react-native";
-import { Link } from "expo-router";
-import { Colors } from "@/constants/Colors";
-import Animated, { FadeInUp } from "react-native-reanimated";
-import { createAnimatedComponent } from "react-native-reanimated";
 import MainBg from "@/components/MainBg";
+import { Colors } from "@/constants/Colors";
+import { Link } from "expo-router";
+import { StyleSheet, View, } from "react-native";
+import Animated, { createAnimatedComponent, FadeInUp } from "react-native-reanimated";
 
 export default function Index() {
-    const AnimatedLink= createAnimatedComponent(Link)
+    const AnimatedLink= createAnimatedComponent(Link);
     return (
         <View style={styles.container}>
             <MainBg />

@@ -5,3 +5,16 @@ export enum Colors {
   BIANCO="#FFFAF1",
   ARANCIONE="#FFFAF1",
 }
+
+export const ThemeColors = {
+  light: {
+    text: "#11181C",
+    background: Colors.BIANCO,
+    tint: Colors.VERDE,
+  },
+  dark: {
+    text: "#ECEDEE",
+    background: "#151718",
+    tint: Colors.GIALLO,
+  },
+} as const;

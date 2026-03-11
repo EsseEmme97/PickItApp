@@ -15,11 +15,14 @@ export default function AllListsPage() {
     const [lists, setLists] = useState<List[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const isFocused = useIsFocused();
-
     useEffect(() => {
         setIsLoading(true);
         getLists().then(setLists).finally(() => setIsLoading(false));
-    }, [isFocused])
+    }, [isFocused]);
+
+    const handleDelete = (id: string) => {
+        setLists(prev => prev.filter(list => list.id !== id));
+    };
 
 
     return (
@@ -28,15 +31,11 @@ export default function AllListsPage() {
             <View style={styles.container}>
                 <Text style={styles.title}>Tutte le liste</Text>
                 {isLoading ? <Loader /> :
-                    <View style={styles.listWrapper}>
-                        <Animated.FlatList
-                            style={styles.list}
-                            contentContainerStyle={styles.listContent}
-                            data={lists}
-                            renderItem={({ item }) => <ListItem {...item} />}
-                            itemLayoutAnimation={LinearTransition}
-                        />
-                    </View>
+                    <Animated.FlatList
+                        data={lists}
+                        renderItem={({ item }) => <ListItem {...item} onDelete={() => handleDelete(item.id)} />}
+                        itemLayoutAnimation={LinearTransition}
+                    />
                 }
             </View>
         </>);
